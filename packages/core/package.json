@@ -1,0 +1,41 @@
+{
+  "name": "@cookie-store/core",
+  "description": "Core synchronous cache for Cookie Store API - enables reactive bindings across frameworks.",
+  "version": "0.1.0",
+  "type": "module",
+  "keywords": [
+    "cookie",
+    "cookie-store",
+    "cache",
+    "reactive",
+    "typescript"
+  ],
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "turbo watch build",
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@cookie-store/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "happy-dom": "^18.0.1",
+    "tsup": "catalog:",
+    "vitest": "catalog:"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "name": "@cookie-store/vue",
+  "description": "Vue composables for reactive Cookie Store API bindings",
+  "version": "0.1.0",
+  "type": "module",
+  "keywords": [
+    "cookie",
+    "cookie-store",
+    "vue",
+    "vue3",
+    "composables",
+    "reactive",
+    "typescript"
+  ],
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "turbo watch build",
+    "build": "tsup",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@cookie-store/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@cookie-store/typescript-config": "workspace:*",
+    "@vitest/browser": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "@vitejs/plugin-vue": "6.0.0",
+    "playwright": "catalog:",
+    "tsup": "catalog:",
+    "vitest": "catalog:",
+    "vitest-browser-vue": "^1.0.0"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.17"
+  }
+}
