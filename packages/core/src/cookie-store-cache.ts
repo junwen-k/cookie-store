@@ -9,18 +9,15 @@ export class CookieStoreCache {
     // Only initialize in browser with Cookie Store API support
     if (typeof window !== 'undefined' && 'cookieStore' in window) {
       this.#initialize();
-    } else {
-      throw new Error('Cookie Store API not supported');
     }
   }
 
   async #initialize() {
     try {
       this.#initializeCookies();
-    } catch (error) {
-      throw new Error('Failed to initialize cookie cache');
+    } catch {
+      // Do nothing
     }
-
     this.#initializeListeners();
   }
 
