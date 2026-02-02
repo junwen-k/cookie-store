@@ -1,75 +1,84 @@
-# @cookie-store Project Guidelines
+# @cookie-store — Agent Guidelines
 
-## Project Philosophy
+This file gives AI agents project-specific rules, constraints, and workflows for **@cookie-store**: reactive [Cookie Store API](https://developer.mozilla.org/en-US/docs/Web/API/Cookie_Store_API) bindings for JavaScript frameworks. Follow it when editing code, adding features, or writing tests.
 
-This project provides **reactive Cookie Store API bindings** for different JavaScript frameworks and libraries. Our philosophy centers on:
+---
 
-### 1. **API Design Guidelines**
+## Project philosophy
 
-- **Deliberate, Cautious, and Thoughtful API Design**
-  - Prefer well-considered API design over quick or hacky workarounds
-  - Strive for API quality and ergonomics on par with Vercel/Next.js libraries
+- **What we build**: Thin, reactive bindings on top of the native Cookie Store API. We do not replace or wrap mutation APIs; we only provide reactive reads. Mutations use `window.cookieStore` directly.
+- **How we build**: API design is deliberate and conservative. We prefer minimal, stable, framework-idiomatic APIs over extra features or magic.
 
-- **Idiomatic Integration**
-  - APIs should feel idiomatic to the host framework
-  - Ensure usage is clear, predictable, and natural for experienced framework developers
+---
 
-- **Minimal and Consistent Public API**
-  - Public APIs must be stable, minimal, and consistent
-  - Avoid leaky, surprising, or overly magical patterns
+## Do
 
-- **Conservative Feature Set**
-  - Choose to do less, not more, when in doubt
-  - Omit or limit features rather than risk a poor developer experience
+- Design APIs to feel idiomatic in each framework (React, Vue, Svelte, Preact, Solid).
+- Keep the public API minimal, stable, and consistent.
+- Keep the abstraction layer thin: only what’s needed for reactivity; proxy/adapt the browser API, don’t reinvent it.
+- Align API quality and ergonomics with well-regarded libraries (e.g. Vercel/Next.js style).
+- Use **pnpm workspaces** and **Turbo** for the monorepo.
+- Run `pnpm lint` before committing; pre-commit hooks format and lint staged files.
+- Omit `url` from `CookieStoreGetOptions` surface in docs/APIs meant for main thread (it’s for service workers only).
 
-### 2. **Thin Abstraction Layer**
+## Don’t
 
-- Keep the abstraction layer as **thin and light as possible**
-- Avoid unnecessary abstractions or premature optimizations
-- Only add functionality that directly supports reactivity
-- Do not reinvent browser APIs - proxy and adapt when needed
-- `CookieStoreGetOptions` omits `url` as it is only relevant for service workers
+- Add custom mutation APIs; use the native Cookie Store API for writes.
+- Introduce leaky, surprising, or overly magical patterns.
+- Add features “just in case”; when in doubt, do less.
 
-### 3. **Native to Browser API**
+---
 
-- Stay as **native as possible** to the [Cookie Store API](https://developer.mozilla.org/en-US/docs/Web/API/Cookie_Store_API)
-- Mutations should use the native `window.cookieStore` directly
-- Our layer only provides reactive reads, not custom mutation APIs
+## Architecture
 
-### 4. **Idiomatic to Each Framework**
+### Single source of truth
 
-- Each library or framework binding must be **idiomatic** to that framework's conventions for integrating external store, for example:
+- **@cookie-store/core** exposes a synchronous **CookieStoreCache**.
+- The cache subscribes to the native `cookieStore` and re-dispatches events.
+- All framework bindings subscribe to this core cache, not directly to the native API.
+- This keeps reads synchronous and consistent for reactive systems.
 
-- React: Use [useSyncExternalStore](https://react.dev/reference/react/useSyncExternalStore) (React 18+)
-- Vue: Use [shallowRef](https://vuejs.org/guide/extras/reactivity-in-depth.html#integration-with-external-state-systems), [readonly](https://vuejs.org/guide/extras/reactivity-in-depth.html#integration-with-external-state-systems), and the composition API
-- Svelte: Use [createSubscriber](https://svelte.dev/docs/svelte/svelte-reactivity#createSubscriber) with Svelte 5 runes
-- Preact: Provide both standard [hooks](https://preactjs.com/guide/v10/hooks#stateful-hooks) AND optional [signals](https://preactjs.com/guide/v10/signals/#api)
-- Solid: Use [from](https://docs.solidjs.com/reference/reactive-utilities/from) for external store integration
+### Framework bindings (idiomatic integration)
 
-Always refer to each library or framework's documentation for up-to-date information
+Each binding must follow that framework’s recommended way to integrate external stores:
 
-### 5. **Single Source of Truth**
+| Framework | Use                                                                                                                                                                                                                                         |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| React     | [useSyncExternalStore](https://react.dev/reference/react/useSyncExternalStore) (React 18+)                                                                                                                                                  |
+| Vue       | [shallowRef](https://vuejs.org/guide/extras/reactivity-in-depth.html#integration-with-external-state-systems), [readonly](https://vuejs.org/guide/extras/reactivity-in-depth.html#integration-with-external-state-systems), Composition API |
+| Svelte    | [createSubscriber](https://svelte.dev/docs/svelte/svelte-reactivity#createSubscriber) with Svelte 5 runes                                                                                                                                   |
+| Preact    | Standard [hooks](https://preactjs.com/guide/v10/hooks#stateful-hooks) and optional [signals](https://preactjs.com/guide/v10/signals/#api)                                                                                                   |
+| Solid     | [from](https://docs.solidjs.com/reference/reactive-utilities/from) for external store integration                                                                                                                                           |
 
-- `@cookie-store/core` provides a synchronous `CookieStoreCache`
-- The cache listens to native `cookieStore` events and re-dispatches them
-- All framework bindings subscribe to the core cache, not directly to native API
-- This ensures consistency and allows synchronous reads for reactive systems
+Always double-check the official docs for the framework you’re editing; conventions can change.
 
-## Code Quality Standards
+---
 
-### Linting and Formatting
+## Code quality
 
-- **ESLint**: All code must pass ESLint checks
-- **Prettier**: All code must be formatted with Prettier
-- Run `pnpm lint` before committing
-- Pre-commit hooks will automatically format and lint staged files
+### Linting and formatting
 
-### Testing Requirements
+- **ESLint**: All code must pass ESLint.
+- **Prettier**: All code must be formatted with Prettier.
+- Run `pnpm lint` before committing.
 
-- All framework bindings must have comprehensive tests
-- Tests must cover:
-  - Reactivity (updates on cookie changes)
+### Testing
 
-### Monorepo Structure
+- Every framework binding must have tests.
+- Tests must cover **reactivity** (e.g. updates when cookies change).
+- Prefer adding or updating tests when changing behavior.
 
-- Use **pnpm workspaces** and **Turbo** for builds
+### Commands (prefer scoped when possible)
+
+- Lint: `pnpm lint` (or lint a single package via Turbo/filter if configured).
+- Typecheck: run the typecheck script for the package you changed.
+- Test: run tests for the package you changed (e.g. `pnpm --filter @cookie-store/<pkg> test` or equivalent).
+- Full build: only when necessary (e.g. before release or when explicitly asked).
+
+---
+
+## When unsure
+
+- Prefer a small, focused change and a short summary of what and why.
+- If requirements are ambiguous, ask or propose a short plan instead of making large speculative edits.
+- Do not install new dependencies, run full monorepo builds, or push without explicit approval unless the user clearly asks for it.
