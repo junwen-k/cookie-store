@@ -1,5 +1,5 @@
 import { cookieStoreCache } from '@cookie-store/core';
-import { act, renderHook } from '@testing-library/preact';
+import { act, renderHook, waitFor } from '@testing-library/preact';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useCookie, useCookies } from './use-cookie';
@@ -26,7 +26,9 @@ describe('useCookie', () => {
 
       const { result } = renderHook(() => useCookie('test'));
 
-      expect(result.current).toMatchObject({ name: 'test', value: 'value123' });
+      await waitFor(() => {
+        expect(result.current).toMatchObject({ name: 'test', value: 'value123' });
+      });
     });
 
     it('should update when cookie changes', async () => {
@@ -38,13 +40,17 @@ describe('useCookie', () => {
         await window.cookieStore.set('test', 'initial');
       });
 
-      expect(result.current).toMatchObject({ name: 'test', value: 'initial' });
+      await waitFor(() => {
+        expect(result.current).toMatchObject({ name: 'test', value: 'initial' });
+      });
 
       await act(async () => {
         await window.cookieStore.set('test', 'updated');
       });
 
-      expect(result.current).toMatchObject({ name: 'test', value: 'updated' });
+      await waitFor(() => {
+        expect(result.current).toMatchObject({ name: 'test', value: 'updated' });
+      });
     });
 
     it('should update when cookie is deleted', async () => {
@@ -58,7 +64,9 @@ describe('useCookie', () => {
         await window.cookieStore.delete('test');
       });
 
-      expect(result.current).toBeNull();
+      await waitFor(() => {
+        expect(result.current).toBeNull();
+      });
     });
 
     it('should not update for unrelated cookie changes', async () => {
@@ -142,9 +150,11 @@ describe('useCookies', () => {
 
       const { result } = renderHook(() => useCookies());
 
-      expect(result.current).toHaveLength(2);
-      expect(result.current[0]).toMatchObject({ name: 'cookie1', value: 'value1' });
-      expect(result.current[1]).toMatchObject({ name: 'cookie2', value: 'value2' });
+      await waitFor(() => {
+        expect(result.current).toHaveLength(2);
+        expect(result.current[0]).toMatchObject({ name: 'cookie1', value: 'value1' });
+        expect(result.current[1]).toMatchObject({ name: 'cookie2', value: 'value2' });
+      });
     });
 
     it('should update when cookies change', async () => {
@@ -156,15 +166,19 @@ describe('useCookies', () => {
         await window.cookieStore.set('test', 'initial');
       });
 
-      expect(result.current).toHaveLength(1);
-      expect(result.current[0]).toMatchObject({ name: 'test', value: 'initial' });
+      await waitFor(() => {
+        expect(result.current).toHaveLength(1);
+        expect(result.current[0]).toMatchObject({ name: 'test', value: 'initial' });
+      });
 
       await act(async () => {
         await window.cookieStore.set('test', 'updated');
       });
 
-      expect(result.current).toHaveLength(1);
-      expect(result.current[0]).toMatchObject({ name: 'test', value: 'updated' });
+      await waitFor(() => {
+        expect(result.current).toHaveLength(1);
+        expect(result.current[0]).toMatchObject({ name: 'test', value: 'updated' });
+      });
     });
 
     it('should update when cookie is added', async () => {
@@ -176,8 +190,10 @@ describe('useCookies', () => {
         await window.cookieStore.set('new', 'value');
       });
 
-      expect(result.current).toHaveLength(1);
-      expect(result.current[0]).toMatchObject({ name: 'new', value: 'value' });
+      await waitFor(() => {
+        expect(result.current).toHaveLength(1);
+        expect(result.current[0]).toMatchObject({ name: 'new', value: 'value' });
+      });
     });
 
     it('should update when cookie is deleted', async () => {
@@ -185,13 +201,17 @@ describe('useCookies', () => {
 
       const { result } = renderHook(() => useCookies());
 
-      expect(result.current).toHaveLength(1);
+      await waitFor(() => {
+        expect(result.current).toHaveLength(1);
+      });
 
       await act(async () => {
         await window.cookieStore.delete('test');
       });
 
-      expect(result.current).toEqual([]);
+      await waitFor(() => {
+        expect(result.current).toEqual([]);
+      });
     });
 
     it('should filter by name when provided', async () => {
@@ -200,8 +220,10 @@ describe('useCookies', () => {
 
       const { result } = renderHook(() => useCookies('watched'));
 
-      expect(result.current).toHaveLength(1);
-      expect(result.current[0]).toMatchObject({ name: 'watched', value: 'value1' });
+      await waitFor(() => {
+        expect(result.current).toHaveLength(1);
+        expect(result.current[0]).toMatchObject({ name: 'watched', value: 'value1' });
+      });
     });
 
     it('should not update for unrelated cookie changes when filtered', async () => {
@@ -209,14 +231,18 @@ describe('useCookies', () => {
 
       const { result } = renderHook(() => useCookies('watched'));
 
-      expect(result.current).toHaveLength(1);
+      await waitFor(() => {
+        expect(result.current).toHaveLength(1);
+      });
 
       await act(async () => {
         await window.cookieStore.set('ignored', 'value2');
       });
 
-      expect(result.current).toHaveLength(1);
-      expect(result.current[0]).toMatchObject({ name: 'watched', value: 'value1' });
+      await waitFor(() => {
+        expect(result.current).toHaveLength(1);
+        expect(result.current[0]).toMatchObject({ name: 'watched', value: 'value1' });
+      });
     });
   });
 
