@@ -38,10 +38,12 @@ describe('createCookie', () => {
       expect(result()).toBeNull();
 
       await cookieStore!.set('test', 'initial');
+      await new Promise((resolve) => setTimeout(resolve, 50));
 
       expect(result()).toMatchObject({ name: 'test', value: 'initial' });
 
       await cookieStore!.set('test', 'updated');
+      await new Promise((resolve) => setTimeout(resolve, 50));
 
       expect(result()).toMatchObject({ name: 'test', value: 'updated' });
     });
@@ -131,11 +133,13 @@ describe('createCookies', () => {
       expect(result()).toEqual([]);
 
       await cookieStore!.set('test', 'initial');
+      await new Promise((resolve) => setTimeout(resolve, 50));
 
       expect(result()).toHaveLength(1);
       expect(result()[0]).toMatchObject({ name: 'test', value: 'initial' });
 
       await cookieStore!.set('test', 'updated');
+      await new Promise((resolve) => setTimeout(resolve, 50));
 
       expect(result()).toHaveLength(1);
       expect(result()[0]).toMatchObject({ name: 'test', value: 'updated' });

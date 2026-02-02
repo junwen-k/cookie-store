@@ -45,8 +45,8 @@
     "@testing-library/preact": "^3.2.4",
     "@types/node": "catalog:",
     "@cookie-store/typescript-config": "workspace:*",
+    "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "happy-dom": "^18.0.1",
     "tsup": "catalog:",
     "vitest": "catalog:"
   },

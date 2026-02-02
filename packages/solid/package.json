@@ -41,6 +41,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "catalog:",
     "@cookie-store/typescript-config": "workspace:*",
+    "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "tsup": "catalog:",
     "vite-plugin-solid": "^2.11.8",

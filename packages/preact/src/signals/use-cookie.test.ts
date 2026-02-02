@@ -140,6 +140,7 @@ describe('useCookies (signals)', () => {
 
       await act(async () => {
         await cookieStore!.set('test', 'initial');
+        await new Promise((resolve) => setTimeout(resolve, 50));
       });
 
       expect(result.current.value).toHaveLength(1);
@@ -147,6 +148,7 @@ describe('useCookies (signals)', () => {
 
       await act(async () => {
         await cookieStore!.set('test', 'updated');
+        await new Promise((resolve) => setTimeout(resolve, 50));
       });
 
       expect(result.current.value).toHaveLength(1);

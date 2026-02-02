@@ -39,12 +39,14 @@ describe('useCookie', () => {
 
       await act(async () => {
         await cookieStore!.set('test', 'initial');
+        await new Promise((resolve) => setTimeout(resolve, 50));
       });
 
       expect(result.current).toMatchObject({ name: 'test', value: 'initial' });
 
       await act(async () => {
         await cookieStore!.set('test', 'updated');
+        await new Promise((resolve) => setTimeout(resolve, 50));
       });
 
       expect(result.current).toMatchObject({ name: 'test', value: 'updated' });
@@ -140,6 +142,7 @@ describe('useCookies', () => {
 
       await act(async () => {
         await cookieStore!.set('test', 'initial');
+        await new Promise((resolve) => setTimeout(resolve, 50));
       });
 
       expect(result.current).toHaveLength(1);
@@ -147,6 +150,7 @@ describe('useCookies', () => {
 
       await act(async () => {
         await cookieStore!.set('test', 'updated');
+        await new Promise((resolve) => setTimeout(resolve, 50));
       });
 
       expect(result.current).toHaveLength(1);

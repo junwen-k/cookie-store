@@ -138,10 +138,9 @@ describe('useCookies', () => {
     const { result } = renderHook(() => useCookies());
 
     await waitFor(() => {
-      expect(result.current).toEqual([
-        { name: 'cookie1', value: 'value1' },
-        { name: 'cookie2', value: 'value2' },
-      ]);
+      expect(result.current).toHaveLength(2);
+      expect(result.current[0]).toMatchObject({ name: 'cookie1', value: 'value1' });
+      expect(result.current[1]).toMatchObject({ name: 'cookie2', value: 'value2' });
     });
   });
 
@@ -151,14 +150,16 @@ describe('useCookies', () => {
     const { result } = renderHook(() => useCookies('test'));
 
     await waitFor(() => {
-      expect(result.current).toEqual([{ name: 'test', value: 'initial' }]);
+      expect(result.current).toHaveLength(1);
+      expect(result.current[0]).toMatchObject({ name: 'test', value: 'initial' });
     });
 
     // Update cookie
     await window.cookieStore.set('test', 'updated');
 
     await waitFor(() => {
-      expect(result.current).toEqual([{ name: 'test', value: 'updated' }]);
+      expect(result.current).toHaveLength(1);
+      expect(result.current[0]).toMatchObject({ name: 'test', value: 'updated' });
     });
   });
 
@@ -173,7 +174,8 @@ describe('useCookies', () => {
     await window.cookieStore.set('new', 'value');
 
     await waitFor(() => {
-      expect(result.current).toEqual([{ name: 'new', value: 'value' }]);
+      expect(result.current).toHaveLength(1);
+      expect(result.current[0]).toMatchObject({ name: 'new', value: 'value' });
     });
   });
 
@@ -183,7 +185,8 @@ describe('useCookies', () => {
     const { result } = renderHook(() => useCookies('test'));
 
     await waitFor(() => {
-      expect(result.current).toEqual([{ name: 'test', value: 'value' }]);
+      expect(result.current).toHaveLength(1);
+      expect(result.current[0]).toMatchObject({ name: 'test', value: 'value' });
     });
 
     // Delete cookie
@@ -201,7 +204,8 @@ describe('useCookies', () => {
     const { result } = renderHook(() => useCookies('watched'));
 
     await waitFor(() => {
-      expect(result.current).toEqual([{ name: 'watched', value: 'value1' }]);
+      expect(result.current).toHaveLength(1);
+      expect(result.current[0]).toMatchObject({ name: 'watched', value: 'value1' });
     });
 
     const initialResult = result.current;
