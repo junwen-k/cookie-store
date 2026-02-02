@@ -1,16 +1,13 @@
 import { renderHook } from '@solidjs/testing-library';
-import { cookieCache, cookieStore } from '@cookie-store/core';
+import { cookieStoreCache } from '@cookie-store/core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createCookie, createCookies } from './create-cookie';
 
 describe('createCookie', () => {
   beforeEach(async () => {
-    // Clear all cookies before each test
-    if (cookieStore) {
-      const allCookies = await cookieStore.getAll();
-      await Promise.all(allCookies.map((cookie) => cookieStore!.delete(cookie.name)));
-    }
+    const allCookies = await window.cookieStore.getAll();
+    await Promise.all(allCookies.map((cookie) => window.cookieStore.delete(cookie.name!)));
   });
 
   afterEach(() => {
@@ -25,7 +22,7 @@ describe('createCookie', () => {
     });
 
     it('should return cookie value when it exists', async () => {
-      await cookieStore!.set('test', 'value123');
+      await window.cookieStore.set('test', 'value123');
 
       const { result } = renderHook(() => createCookie('test'));
 
@@ -37,25 +34,25 @@ describe('createCookie', () => {
 
       expect(result()).toBeNull();
 
-      await cookieStore!.set('test', 'initial');
+      await window.cookieStore.set('test', 'initial');
       await new Promise((resolve) => setTimeout(resolve, 50));
 
       expect(result()).toMatchObject({ name: 'test', value: 'initial' });
 
-      await cookieStore!.set('test', 'updated');
+      await window.cookieStore.set('test', 'updated');
       await new Promise((resolve) => setTimeout(resolve, 50));
 
       expect(result()).toMatchObject({ name: 'test', value: 'updated' });
     });
 
     it('should update when cookie is deleted', async () => {
-      await cookieStore!.set('test', 'value123');
+      await window.cookieStore.set('test', 'value123');
 
       const { result } = renderHook(() => createCookie('test'));
 
       expect(result()).toMatchObject({ name: 'test', value: 'value123' });
 
-      await cookieStore!.delete('test');
+      await window.cookieStore.delete('test');
 
       expect(result()).toBeNull();
     });
@@ -65,7 +62,7 @@ describe('createCookie', () => {
 
       expect(result()).toBeNull();
 
-      await cookieStore!.set('test2', 'other-value');
+      await window.cookieStore.set('test2', 'other-value');
 
       expect(result()).toBeNull();
     });
@@ -73,7 +70,7 @@ describe('createCookie', () => {
 
   describe('event listener management', () => {
     it('should subscribe to cache events on mount', () => {
-      const addEventListenerSpy = vi.spyOn(cookieCache, 'addEventListener');
+      const addEventListenerSpy = vi.spyOn(cookieStoreCache, 'addEventListener');
 
       renderHook(() => createCookie('test'));
 
@@ -83,7 +80,7 @@ describe('createCookie', () => {
     });
 
     it('should unsubscribe from cache events on cleanup', () => {
-      const removeEventListenerSpy = vi.spyOn(cookieCache, 'removeEventListener');
+      const removeEventListenerSpy = vi.spyOn(cookieStoreCache, 'removeEventListener');
 
       const { cleanup } = renderHook(() => createCookie('test'));
 
@@ -98,11 +95,8 @@ describe('createCookie', () => {
 
 describe('createCookies', () => {
   beforeEach(async () => {
-    // Clear all cookies before each test
-    if (cookieStore) {
-      const allCookies = await cookieStore.getAll();
-      await Promise.all(allCookies.map((cookie) => cookieStore!.delete(cookie.name)));
-    }
+    const allCookies = await window.cookieStore.getAll();
+    await Promise.all(allCookies.map((cookie) => window.cookieStore.delete(cookie.name!)));
   });
 
   afterEach(() => {
@@ -117,8 +111,8 @@ describe('createCookies', () => {
     });
 
     it('should return all cookies when no filter provided', async () => {
-      await cookieStore!.set('cookie1', 'value1');
-      await cookieStore!.set('cookie2', 'value2');
+      await window.cookieStore.set('cookie1', 'value1');
+      await window.cookieStore.set('cookie2', 'value2');
 
       const { result } = renderHook(() => createCookies());
 
@@ -132,13 +126,13 @@ describe('createCookies', () => {
 
       expect(result()).toEqual([]);
 
-      await cookieStore!.set('test', 'initial');
+      await window.cookieStore.set('test', 'initial');
       await new Promise((resolve) => setTimeout(resolve, 50));
 
       expect(result()).toHaveLength(1);
       expect(result()[0]).toMatchObject({ name: 'test', value: 'initial' });
 
-      await cookieStore!.set('test', 'updated');
+      await window.cookieStore.set('test', 'updated');
       await new Promise((resolve) => setTimeout(resolve, 50));
 
       expect(result()).toHaveLength(1);
@@ -150,27 +144,27 @@ describe('createCookies', () => {
 
       expect(result()).toEqual([]);
 
-      await cookieStore!.set('new', 'value');
+      await window.cookieStore.set('new', 'value');
 
       expect(result()).toHaveLength(1);
       expect(result()[0]).toMatchObject({ name: 'new', value: 'value' });
     });
 
     it('should update when cookie is deleted', async () => {
-      await cookieStore!.set('test', 'value');
+      await window.cookieStore.set('test', 'value');
 
       const { result } = renderHook(() => createCookies());
 
       expect(result()).toHaveLength(1);
 
-      await cookieStore!.delete('test');
+      await window.cookieStore.delete('test');
 
       expect(result()).toEqual([]);
     });
 
     it('should filter by name when provided', async () => {
-      await cookieStore!.set('watched', 'value1');
-      await cookieStore!.set('ignored', 'value2');
+      await window.cookieStore.set('watched', 'value1');
+      await window.cookieStore.set('ignored', 'value2');
 
       const { result } = renderHook(() => createCookies('watched'));
 
@@ -179,13 +173,13 @@ describe('createCookies', () => {
     });
 
     it('should not update for unrelated cookie changes when filtered', async () => {
-      await cookieStore!.set('watched', 'value1');
+      await window.cookieStore.set('watched', 'value1');
 
       const { result } = renderHook(() => createCookies('watched'));
 
       expect(result()).toHaveLength(1);
 
-      await cookieStore!.set('ignored', 'value2');
+      await window.cookieStore.set('ignored', 'value2');
 
       expect(result()).toHaveLength(1);
       expect(result()[0]).toMatchObject({ name: 'watched', value: 'value1' });
@@ -194,7 +188,7 @@ describe('createCookies', () => {
 
   describe('event listener management', () => {
     it('should subscribe to cache events on mount', () => {
-      const addEventListenerSpy = vi.spyOn(cookieCache, 'addEventListener');
+      const addEventListenerSpy = vi.spyOn(cookieStoreCache, 'addEventListener');
 
       renderHook(() => createCookies());
 
@@ -204,7 +198,7 @@ describe('createCookies', () => {
     });
 
     it('should unsubscribe from cache events on cleanup', () => {
-      const removeEventListenerSpy = vi.spyOn(cookieCache, 'removeEventListener');
+      const removeEventListenerSpy = vi.spyOn(cookieStoreCache, 'removeEventListener');
 
       const { cleanup } = renderHook(() => createCookies());
 

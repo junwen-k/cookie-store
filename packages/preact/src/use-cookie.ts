@@ -1,4 +1,4 @@
-import { cookieCache } from '@cookie-store/core';
+import { cookieStoreCache } from '@cookie-store/core';
 import { useEffect, useState } from 'preact/hooks';
 
 /**
@@ -28,17 +28,17 @@ import { useEffect, useState } from 'preact/hooks';
  * ```
  */
 export function useCookie(name: string): CookieListItem | null {
-  const [cookie, setCookie] = useState<CookieListItem | null>(cookieCache.get(name));
+  const [cookie, setCookie] = useState<CookieListItem | null>(cookieStoreCache.get(name));
 
   useEffect(() => {
     const listener = () => {
-      setCookie(cookieCache.get(name));
+      setCookie(cookieStoreCache.get(name));
     };
 
-    cookieCache.addEventListener('change', listener);
+    cookieStoreCache.addEventListener('change', listener);
 
     return () => {
-      cookieCache.removeEventListener('change', listener);
+      cookieStoreCache.removeEventListener('change', listener);
     };
   }, [name]);
 
@@ -71,18 +71,18 @@ export function useCookie(name: string): CookieListItem | null {
  * ```
  */
 export function useCookies(name?: string): CookieList {
-  const [cookies, setCookies] = useState<CookieList>(cookieCache.getAll(name));
+  const [cookies, setCookies] = useState<CookieList>(cookieStoreCache.getAll(name));
 
   useEffect(() => {
     const listener = () => {
       // Create new array copy for reactivity
-      setCookies([...cookieCache.getAll(name)]);
+      setCookies([...cookieStoreCache.getAll(name)]);
     };
 
-    cookieCache.addEventListener('change', listener);
+    cookieStoreCache.addEventListener('change', listener);
 
     return () => {
-      cookieCache.removeEventListener('change', listener);
+      cookieStoreCache.removeEventListener('change', listener);
     };
   }, [name]);
 

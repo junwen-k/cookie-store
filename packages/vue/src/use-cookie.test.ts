@@ -1,4 +1,4 @@
-import { cookieCache, cookieStore } from '@cookie-store/core';
+import { cookieStoreCache } from '@cookie-store/core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
@@ -7,11 +7,8 @@ import TestUseCookiesComponent from './fixtures/test-use-cookies.vue';
 
 describe('useCookie', () => {
   beforeEach(async () => {
-    // Clear all cookies before each test
-    if (cookieStore) {
-      const allCookies = await cookieStore.getAll();
-      await Promise.all(allCookies.map((cookie) => cookieStore!.delete(cookie.name)));
-    }
+    const allCookies = await window.cookieStore.getAll();
+    await Promise.all(allCookies.map((cookie) => window.cookieStore.delete(cookie.name!)));
   });
 
   afterEach(() => {
@@ -32,7 +29,7 @@ describe('useCookie', () => {
         props: { name: 'test' },
       });
 
-      await cookieStore!.set('test', 'value123');
+      await window.cookieStore.set('test', 'value123');
 
       await expect.element(screen.getByTestId('cookie-value')).toHaveTextContent('value123');
     });
@@ -42,10 +39,10 @@ describe('useCookie', () => {
         props: { name: 'test' },
       });
 
-      await cookieStore!.set('test', 'initial');
+      await window.cookieStore.set('test', 'initial');
       await expect.element(screen.getByTestId('cookie-value')).toHaveTextContent('initial');
 
-      await cookieStore!.set('test', 'updated');
+      await window.cookieStore.set('test', 'updated');
       await expect.element(screen.getByTestId('cookie-value')).toHaveTextContent('updated');
     });
 
@@ -54,10 +51,10 @@ describe('useCookie', () => {
         props: { name: 'test' },
       });
 
-      await cookieStore!.set('test', 'value123');
+      await window.cookieStore.set('test', 'value123');
       await expect.element(screen.getByTestId('cookie-value')).toHaveTextContent('value123');
 
-      await cookieStore!.delete('test');
+      await window.cookieStore.delete('test');
       await expect.element(screen.getByTestId('cookie-value')).toHaveTextContent('null');
     });
 
@@ -68,14 +65,14 @@ describe('useCookie', () => {
 
       await expect.element(screen.getByTestId('cookie-value')).toHaveTextContent('null');
 
-      await cookieStore!.set('test2', 'other-value');
+      await window.cookieStore.set('test2', 'other-value');
       await expect.element(screen.getByTestId('cookie-value')).toHaveTextContent('null');
     });
   });
 
   describe('event listener management', () => {
     it('should subscribe to cache events on mount', async () => {
-      const addEventListenerSpy = vi.spyOn(cookieCache, 'addEventListener');
+      const addEventListenerSpy = vi.spyOn(cookieStoreCache, 'addEventListener');
 
       render(TestUseCookieComponent, {
         props: { name: 'test' },
@@ -87,7 +84,7 @@ describe('useCookie', () => {
     });
 
     it('should unsubscribe from cache events on unmount', async () => {
-      const removeEventListenerSpy = vi.spyOn(cookieCache, 'removeEventListener');
+      const removeEventListenerSpy = vi.spyOn(cookieStoreCache, 'removeEventListener');
 
       const { unmount } = render(TestUseCookieComponent, {
         props: { name: 'test' },
@@ -104,11 +101,8 @@ describe('useCookie', () => {
 
 describe('useCookies', () => {
   beforeEach(async () => {
-    // Clear all cookies before each test
-    if (cookieStore) {
-      const allCookies = await cookieStore.getAll();
-      await Promise.all(allCookies.map((cookie) => cookieStore!.delete(cookie.name)));
-    }
+    const allCookies = await window.cookieStore.getAll();
+    await Promise.all(allCookies.map((cookie) => window.cookieStore.delete(cookie.name!)));
   });
 
   afterEach(() => {
@@ -129,16 +123,16 @@ describe('useCookies', () => {
         props: {},
       });
 
-      await cookieStore!.set('test1', 'value1');
+      await window.cookieStore.set('test1', 'value1');
       await expect.element(screen.getByTestId('cookies-length')).toHaveTextContent('1');
 
-      await cookieStore!.set('test2', 'value2');
+      await window.cookieStore.set('test2', 'value2');
       await expect.element(screen.getByTestId('cookies-length')).toHaveTextContent('2');
     });
 
     it('should filter by name when provided', async () => {
-      await cookieStore!.set('test1', 'value1');
-      await cookieStore!.set('test2', 'value2');
+      await window.cookieStore.set('test1', 'value1');
+      await window.cookieStore.set('test2', 'value2');
 
       const screen = render(TestUseCookiesComponent, {
         props: { name: 'test1' },
@@ -148,9 +142,9 @@ describe('useCookies', () => {
     });
 
     it('should return all cookies when no name provided', async () => {
-      await cookieStore!.set('test1', 'value1');
-      await cookieStore!.set('test2', 'value2');
-      await cookieStore!.set('test3', 'value3');
+      await window.cookieStore.set('test1', 'value1');
+      await window.cookieStore.set('test2', 'value2');
+      await window.cookieStore.set('test3', 'value3');
 
       const screen = render(TestUseCookiesComponent, {
         props: {},
@@ -164,18 +158,18 @@ describe('useCookies', () => {
         props: {},
       });
 
-      await cookieStore!.set('test1', 'value1');
-      await cookieStore!.set('test2', 'value2');
+      await window.cookieStore.set('test1', 'value1');
+      await window.cookieStore.set('test2', 'value2');
       await expect.element(screen.getByTestId('cookies-length')).toHaveTextContent('2');
 
-      await cookieStore!.delete('test1');
+      await window.cookieStore.delete('test1');
       await expect.element(screen.getByTestId('cookies-length')).toHaveTextContent('1');
     });
   });
 
   describe('event listener management', () => {
     it('should subscribe to cache events on mount', async () => {
-      const addEventListenerSpy = vi.spyOn(cookieCache, 'addEventListener');
+      const addEventListenerSpy = vi.spyOn(cookieStoreCache, 'addEventListener');
 
       render(TestUseCookiesComponent, {
         props: {},
@@ -187,7 +181,7 @@ describe('useCookies', () => {
     });
 
     it('should unsubscribe from cache events on unmount', async () => {
-      const removeEventListenerSpy = vi.spyOn(cookieCache, 'removeEventListener');
+      const removeEventListenerSpy = vi.spyOn(cookieStoreCache, 'removeEventListener');
 
       const { unmount } = render(TestUseCookiesComponent, {
         props: {},

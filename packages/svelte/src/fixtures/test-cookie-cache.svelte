@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cookieCache } from '../cookie-cache';
+  import { cookieStoreCache } from '../cookie-cache';
 
   interface Props {
     name?: string;
@@ -9,8 +9,8 @@
   const { name, filterName }: Props = $props();
 
   // Reactive cookie value using $derived
-  const cookie = $derived(name ? cookieCache.get(name) : null);
-  const cookies = $derived(cookieCache.getAll(filterName));
+  const cookie = $derived(name ? cookieStoreCache.get(name) : null);
+  const cookies = $derived(cookieStoreCache.getAll(filterName));
 </script>
 
 {#if name}

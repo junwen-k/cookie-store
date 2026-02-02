@@ -1,4 +1,4 @@
-import { cookieCache } from '@cookie-store/core';
+import { cookieStoreCache } from '@cookie-store/core';
 import { onBeforeUnmount, readonly, shallowRef, type Ref } from 'vue';
 
 /**
@@ -30,16 +30,16 @@ import { onBeforeUnmount, readonly, shallowRef, type Ref } from 'vue';
  * ```
  */
 export function useCookie(name: string): Readonly<Ref<CookieListItem | null>> {
-  const cookie = shallowRef<CookieListItem | null>(cookieCache.get(name));
+  const cookie = shallowRef<CookieListItem | null>(cookieStoreCache.get(name));
 
   const listener = () => {
-    cookie.value = cookieCache.get(name);
+    cookie.value = cookieStoreCache.get(name);
   };
 
-  cookieCache.addEventListener('change', listener);
+  cookieStoreCache.addEventListener('change', listener);
 
   onBeforeUnmount(() => {
-    cookieCache.removeEventListener('change', listener);
+    cookieStoreCache.removeEventListener('change', listener);
   });
 
   return readonly(cookie);
@@ -73,17 +73,17 @@ export function useCookie(name: string): Readonly<Ref<CookieListItem | null>> {
 export function useCookies(name?: string): Readonly<Ref<readonly CookieListItem[]>> {
   // getAll() returns stable reference, but Vue's shallowRef needs new reference to trigger
   // Always create a copy to ensure Vue reactivity detects changes
-  const cookies = shallowRef<CookieList>([...cookieCache.getAll(name)]);
+  const cookies = shallowRef<CookieList>([...cookieStoreCache.getAll(name)]);
 
   const listener = () => {
     // Create new array reference for Vue reactivity
-    cookies.value = [...cookieCache.getAll(name)];
+    cookies.value = [...cookieStoreCache.getAll(name)];
   };
 
-  cookieCache.addEventListener('change', listener);
+  cookieStoreCache.addEventListener('change', listener);
 
   onBeforeUnmount(() => {
-    cookieCache.removeEventListener('change', listener);
+    cookieStoreCache.removeEventListener('change', listener);
   });
 
   return readonly(cookies);

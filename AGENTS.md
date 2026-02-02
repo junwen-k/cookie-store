@@ -2,9 +2,27 @@
 
 ## Project Philosophy
 
-This project provides **reactive Cookie Store API bindings** for different JavaScript frameworks and libraries. Our core philosophy is:
+This project provides **reactive Cookie Store API bindings** for different JavaScript frameworks and libraries. Our philosophy centers on:
 
-### 1. **Thin Abstraction Layer**
+### 1. **API Design Guidelines**
+
+- **Deliberate, Cautious, and Thoughtful API Design**
+  - Prefer well-considered API design over quick or hacky workarounds
+  - Strive for API quality and ergonomics on par with Vercel/Next.js libraries
+
+- **Idiomatic Integration**
+  - APIs should feel idiomatic to the host framework
+  - Ensure usage is clear, predictable, and natural for experienced framework developers
+
+- **Minimal and Consistent Public API**
+  - Public APIs must be stable, minimal, and consistent
+  - Avoid leaky, surprising, or overly magical patterns
+
+- **Conservative Feature Set**
+  - Choose to do less, not more, when in doubt
+  - Omit or limit features rather than risk a poor developer experience
+
+### 2. **Thin Abstraction Layer**
 
 - Keep the abstraction layer as **thin and light as possible**
 - Avoid unnecessary abstractions or premature optimizations
@@ -12,13 +30,13 @@ This project provides **reactive Cookie Store API bindings** for different JavaS
 - Do not reinvent browser APIs - proxy and adapt when needed
 - `CookieStoreGetOptions` omits `url` as it is only relevant for service workers
 
-### 2. **Native to Browser API**
+### 3. **Native to Browser API**
 
 - Stay as **native as possible** to the [Cookie Store API](https://developer.mozilla.org/en-US/docs/Web/API/Cookie_Store_API)
 - Mutations should use the native `window.cookieStore` directly
 - Our layer only provides reactive reads, not custom mutation APIs
 
-### 3. **Idiomatic to Each Framework**
+### 4. **Idiomatic to Each Framework**
 
 - Each library or framework binding must be **idiomatic** to that framework's conventions for integrating external store, for example:
 
@@ -30,7 +48,7 @@ This project provides **reactive Cookie Store API bindings** for different JavaS
 
 Always refer to each library or framework's documentation for up-to-date information
 
-### 4. **Single Source of Truth**
+### 5. **Single Source of Truth**
 
 - `@cookie-store/core` provides a synchronous `CookieStoreCache`
 - The cache listens to native `cookieStore` events and re-dispatches them

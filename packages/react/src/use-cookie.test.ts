@@ -1,5 +1,7 @@
+import { cookieStoreCache } from '@cookie-store/core';
 import { renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { useCookie, useCookies } from './use-cookie';
 
 describe('useCookie', () => {
@@ -85,9 +87,6 @@ describe('useCookie', () => {
     // Set a different cookie
     await window.cookieStore.set('other', 'otherValue');
 
-    // Wait a bit to ensure no update
-    await new Promise((resolve) => setTimeout(resolve, 50));
-
     // Should still be the same object reference
     expect(result.current).toBe(initialResult);
   });
@@ -109,6 +108,30 @@ describe('useCookie', () => {
     await waitFor(() => {
       expect(result1.current?.value).toBe('updated');
       expect(result2.current?.value).toBe('updated');
+    });
+  });
+
+  describe('event listener management', () => {
+    it('should subscribe to cache events on mount', () => {
+      const addEventListenerSpy = vi.spyOn(cookieStoreCache, 'addEventListener');
+
+      renderHook(() => useCookie('test'));
+
+      expect(addEventListenerSpy).toHaveBeenCalledWith('change', expect.any(Function));
+
+      addEventListenerSpy.mockRestore();
+    });
+
+    it('should unsubscribe from cache events on unmount', () => {
+      const removeEventListenerSpy = vi.spyOn(cookieStoreCache, 'removeEventListener');
+
+      const { unmount } = renderHook(() => useCookie('test'));
+
+      unmount();
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('change', expect.any(Function));
+
+      removeEventListenerSpy.mockRestore();
     });
   });
 });
@@ -218,5 +241,50 @@ describe('useCookies', () => {
 
     // Should still be the same object reference
     expect(result.current).toBe(initialResult);
+  });
+
+  describe('event listener management', () => {
+    it('should subscribe to cache events on mount', () => {
+      const addEventListenerSpy = vi.spyOn(cookieStoreCache, 'addEventListener');
+
+      renderHook(() => useCookies());
+
+      expect(addEventListenerSpy).toHaveBeenCalledWith('change', expect.any(Function));
+
+      addEventListenerSpy.mockRestore();
+    });
+
+    it('should unsubscribe from cache events on unmount', () => {
+      const removeEventListenerSpy = vi.spyOn(cookieStoreCache, 'removeEventListener');
+
+      const { unmount } = renderHook(() => useCookies());
+
+      unmount();
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('change', expect.any(Function));
+
+      removeEventListenerSpy.mockRestore();
+    });
+
+    it('should handle multiple subscribers', async () => {
+      await window.cookieStore.set('test1', 'value1');
+      await window.cookieStore.set('test2', 'value2');
+
+      const { result: result1 } = renderHook(() => useCookies());
+      const { result: result2 } = renderHook(() => useCookies());
+
+      await waitFor(() => {
+        expect(result1.current).toHaveLength(2);
+        expect(result2.current).toHaveLength(2);
+      });
+
+      // Add another cookie
+      await window.cookieStore.set('test3', 'value3');
+
+      await waitFor(() => {
+        expect(result1.current).toHaveLength(3);
+        expect(result2.current).toHaveLength(3);
+      });
+    });
   });
 });

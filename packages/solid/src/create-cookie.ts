@@ -1,4 +1,4 @@
-import { cookieCache } from '@cookie-store/core';
+import { cookieStoreCache } from '@cookie-store/core';
 import { from } from 'solid-js';
 
 /**
@@ -30,15 +30,15 @@ import { from } from 'solid-js';
 export function createCookie(name: string) {
   return from<CookieListItem | null>((set) => {
     const listener = () => {
-      set(cookieCache.get(name));
+      set(cookieStoreCache.get(name));
     };
 
-    cookieCache.addEventListener('change', listener);
+    cookieStoreCache.addEventListener('change', listener);
 
     return () => {
-      cookieCache.removeEventListener('change', listener);
+      cookieStoreCache.removeEventListener('change', listener);
     };
-  }, cookieCache.get(name));
+  }, cookieStoreCache.get(name));
 }
 
 /**
@@ -71,13 +71,13 @@ export function createCookies(name?: string) {
   return from<CookieList>((set) => {
     const listener = () => {
       // Create new array copy for reactivity
-      set([...cookieCache.getAll(name)]);
+      set([...cookieStoreCache.getAll(name)]);
     };
 
-    cookieCache.addEventListener('change', listener);
+    cookieStoreCache.addEventListener('change', listener);
 
     return () => {
-      cookieCache.removeEventListener('change', listener);
+      cookieStoreCache.removeEventListener('change', listener);
     };
-  }, cookieCache.getAll(name));
+  }, cookieStoreCache.getAll(name));
 }

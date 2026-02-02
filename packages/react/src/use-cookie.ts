@@ -1,6 +1,6 @@
 'use client';
 
-import { cookieCache } from '@cookie-store/core';
+import { cookieStoreCache } from '@cookie-store/core';
 import { useCallback, useRef, useSyncExternalStore } from 'react';
 
 /**
@@ -31,13 +31,13 @@ import { useCallback, useRef, useSyncExternalStore } from 'react';
  */
 export function useCookie(name: string): CookieListItem | null {
   const subscribe = useCallback((onStoreChange: () => void) => {
-    cookieCache.addEventListener('change', onStoreChange);
+    cookieStoreCache.addEventListener('change', onStoreChange);
     return () => {
-      cookieCache.removeEventListener('change', onStoreChange);
+      cookieStoreCache.removeEventListener('change', onStoreChange);
     };
   }, []);
 
-  const getSnapshot = useCallback(() => cookieCache.get(name), [name]);
+  const getSnapshot = useCallback(() => cookieStoreCache.get(name), [name]);
 
   const getServerSnapshot = useCallback(() => null, []);
 
@@ -71,9 +71,9 @@ export function useCookie(name: string): CookieListItem | null {
  */
 export function useCookies(name?: string): CookieList {
   const subscribe = useCallback((onStoreChange: () => void) => {
-    cookieCache.addEventListener('change', onStoreChange);
+    cookieStoreCache.addEventListener('change', onStoreChange);
     return () => {
-      cookieCache.removeEventListener('change', onStoreChange);
+      cookieStoreCache.removeEventListener('change', onStoreChange);
     };
   }, []);
 
@@ -82,7 +82,7 @@ export function useCookies(name?: string): CookieList {
   const cacheRef = useRef<CookieList>([]);
 
   const getSnapshot = useCallback(() => {
-    const result = cookieCache.getAll(name);
+    const result = cookieStoreCache.getAll(name);
 
     // If no name filter, return stable reference directly
     if (!name) {

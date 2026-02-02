@@ -2,14 +2,8 @@
   "name": "@cookie-store/core",
   "description": "Core synchronous cache for Cookie Store API - enables reactive bindings across frameworks.",
   "version": "0.1.0",
+  "private": true,
   "type": "module",
-  "keywords": [
-    "cookie",
-    "cookie-store",
-    "cache",
-    "reactive",
-    "typescript"
-  ],
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -21,9 +15,6 @@
       "require": "./dist/index.js"
     }
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "dev": "turbo watch build",
     "build": "tsup",

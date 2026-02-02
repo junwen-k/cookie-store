@@ -4,8 +4,8 @@ import { CookieStoreCache, cookieStoreCache } from './cookie-store-cache';
 
 describe('CookieStoreCache', () => {
   beforeEach(async () => {
-    const cookies = await window.cookieStore.getAll();
-    await Promise.all(cookies.map((cookie) => window.cookieStore.delete(cookie.name!)));
+    const allCookies = await window.cookieStore.getAll();
+    await Promise.all(allCookies.map((cookie) => window.cookieStore.delete(cookie.name!)));
   });
 
   describe('get', () => {
@@ -53,7 +53,7 @@ describe('CookieStoreCache', () => {
     });
   });
 
-  describe('singleton cookieCache', () => {
+  describe('singleton cookieStoreCache', () => {
     it('should export a singleton instance', () => {
       expect(cookieStoreCache).toBeInstanceOf(CookieStoreCache);
     });

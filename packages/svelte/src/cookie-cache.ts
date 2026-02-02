@@ -1,6 +1,6 @@
 import {
   CookieStoreCache as CoreCookieStoreCache,
-  cookieCache as coreCookieCache,
+  cookieStoreCache as coreCookieStoreCache,
 } from '@cookie-store/core';
 import { createSubscriber } from 'svelte/reactivity';
 
@@ -17,10 +17,10 @@ export class CookieStoreCache extends CoreCookieStoreCache {
     this.#subscribe = createSubscriber((update) => {
       const listener = () => update();
 
-      coreCookieCache.addEventListener('change', listener);
+      coreCookieStoreCache.addEventListener('change', listener);
 
       return () => {
-        coreCookieCache.removeEventListener('change', listener);
+        coreCookieStoreCache.removeEventListener('change', listener);
       };
     });
   }
@@ -31,7 +31,7 @@ export class CookieStoreCache extends CoreCookieStoreCache {
    */
   override get(name: string): CookieListItem | null {
     this.#subscribe();
-    return coreCookieCache.get(name);
+    return coreCookieStoreCache.get(name);
   }
 
   /**
@@ -42,7 +42,7 @@ export class CookieStoreCache extends CoreCookieStoreCache {
   override getAll(name?: string): CookieList {
     this.#subscribe();
     // Return new array copy for Svelte reactivity
-    return [...coreCookieCache.getAll(name)];
+    return [...coreCookieStoreCache.getAll(name)];
   }
 }
 
@@ -53,9 +53,9 @@ export class CookieStoreCache extends CoreCookieStoreCache {
  * @example
  * ```svelte
  * <script>
- *   import { cookieCache, cookieStore } from '@cookie-store/svelte';
+ *   import { cookieStoreCache, cookieStore } from '@cookie-store/svelte';
  *
- *   const session = $derived(cookieCache.get('session'));
+ *   const session = $derived(cookieStoreCache.get('session'));
  *
  *   async function login() {
  *     await cookieStore.set('session', 'token123');
@@ -65,4 +65,4 @@ export class CookieStoreCache extends CoreCookieStoreCache {
  * <div>{session ? `Logged in: ${session.value}` : 'Not logged in'}</div>
  * ```
  */
-export const cookieCache = new CookieStoreCache();
+export const cookieStoreCache = new CookieStoreCache();
