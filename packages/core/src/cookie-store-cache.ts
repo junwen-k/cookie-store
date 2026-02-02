@@ -1,13 +1,8 @@
 /**
  * Synchronous cache for Cookie Store API.
  * Maintains an in-memory mirror of cookies as a stable array & provides synchronous read access.
- * This enables idiomatic reactive patterns across frameworks that expect sync getters.
- *
- * The cache acts as a single source of truth - wrapping the native Cookie Store API
- * and providing both synchronous data access AND event notifications to bindings.
  */
 export class CookieStoreCache {
-  #ready = false;
   #cookies: CookieList = [];
 
   constructor() {
@@ -21,69 +16,48 @@ export class CookieStoreCache {
 
   async #initialize() {
     try {
-      const cookies = await window.cookieStore.getAll();
-      this.#updateCookiesArrayFromList(cookies);
-      this.#ready = true;
+      this.#initializeCookies();
     } catch (error) {
-      console.error('Failed to initialize cookie cache:', error);
+      throw new Error('Failed to initialize cookie cache');
     }
 
-    window.cookieStore.addEventListener('change', this.#handleChange);
+    this.#initializeListeners();
   }
 
-  /**
-   * Always update the stable array reference in-place,
-   * replacing values but not the array object.
-   */
-  #updateCookiesArrayFromList(cookies: CookieList) {
+  async #initializeCookies() {
+    const cookies = await window.cookieStore.getAll();
     this.#cookies.length = 0;
     for (const cookie of cookies) {
       this.#cookies.push(cookie);
     }
   }
 
+  #initializeListeners() {
+    window.cookieStore.addEventListener('change', this.#handleChange);
+  }
+
   #handleChange = (event: CookieChangeEvent) => {
-    let changed = false;
-
-    // Apply changed cookies
-    event.changed?.forEach((changedCookie) => {
-      if (!changedCookie.name) return;
-      // Replace or insert cookie in the array
-      const idx = this.#cookies.findIndex((c) => c.name === changedCookie.name);
-      if (idx >= 0) {
-        this.#cookies[idx] = changedCookie;
+    event.changed?.forEach((cookie) => {
+      const index = this.#cookies.findIndex((c) => c.name === cookie.name);
+      if (index !== -1) {
+        this.#cookies[index] = cookie;
       } else {
-        this.#cookies.push(changedCookie);
-      }
-      changed = true;
-    });
-
-    // Apply deleted cookies
-    event.deleted?.forEach((deletedCookie) => {
-      if (!deletedCookie.name) return;
-      const idx = this.#cookies.findIndex((c) => c.name === deletedCookie.name);
-      if (idx >= 0) {
-        this.#cookies.splice(idx, 1);
-        changed = true;
+        this.#cookies.push(cookie);
       }
     });
 
-    // No other array reference, so just do nothing extra.
-    // Listeners get notified only if underlying API emits.
+    event.deleted?.forEach((cookie) => {
+      const index = this.#cookies.findIndex((c) => c.name === cookie.name);
+      if (index !== -1) {
+        this.#cookies.splice(index, 1);
+      }
+    });
   };
 
-  /**
-   * Lookup by iterating the array. (O(n))
-   * For small cookie sets, this is likely fine.
-   */
   get(name: string): CookieListItem | null {
     return this.#cookies.find((cookie) => cookie.name === name) ?? null;
   }
 
-  /**
-   * If given a name, returns a fresh array of matching cookies.
-   * Otherwise always returns the stable reference.
-   */
   getAll(name?: string): CookieList {
     if (name) {
       return this.#cookies.filter((cookie) => cookie.name === name);
@@ -98,10 +72,6 @@ export class CookieStoreCache {
   removeEventListener(...args: Parameters<typeof window.cookieStore.removeEventListener>): void {
     window.cookieStore?.removeEventListener(...args);
   }
-
-  isReady(): boolean {
-    return this.#ready;
-  }
 }
 
-export const cookieCache = new CookieStoreCache();
+export const cookieStoreCache = new CookieStoreCache();

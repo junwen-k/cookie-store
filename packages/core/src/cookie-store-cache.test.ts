@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { CookieStoreCache, cookieCache } from './cookie-store-cache';
+import { CookieStoreCache, cookieStoreCache } from './cookie-store-cache';
 
 describe('CookieStoreCache', () => {
   beforeEach(async () => {
@@ -10,13 +10,13 @@ describe('CookieStoreCache', () => {
 
   describe('get', () => {
     it('should return null when cookie does not exist', () => {
-      expect(cookieCache.get('nonexistent')).toBeNull();
+      expect(cookieStoreCache.get('nonexistent')).toBeNull();
     });
 
     it('should return cookie after it is set', async () => {
       await window.cookieStore.set('test', 'value123');
 
-      const cookie = cookieCache.get('test');
+      const cookie = cookieStoreCache.get('test');
       expect(cookie).not.toBeNull();
       expect(cookie?.name).toBe('test');
       expect(cookie?.value).toBe('value123');
@@ -25,17 +25,17 @@ describe('CookieStoreCache', () => {
     it('should return null after cookie is deleted', async () => {
       await window.cookieStore.set('test', 'value123');
 
-      expect(cookieCache.get('test')).not.toBeNull();
+      expect(cookieStoreCache.get('test')).not.toBeNull();
 
       await window.cookieStore.delete('test');
 
-      expect(cookieCache.get('test')).toBeNull();
+      expect(cookieStoreCache.get('test')).toBeNull();
     });
   });
 
   describe('getAll', () => {
     it('should return empty array when no cookies exist', () => {
-      expect(cookieCache.getAll()).toEqual([]);
+      expect(cookieStoreCache.getAll()).toEqual([]);
     });
 
     it('should return all cookies as array', async () => {
@@ -43,7 +43,7 @@ describe('CookieStoreCache', () => {
       await window.cookieStore.set('cookie2', 'value2');
       await window.cookieStore.set('cookie3', 'value3');
 
-      const cookies = cookieCache.getAll();
+      const cookies = cookieStoreCache.getAll();
       expect(cookies.length).toBe(3);
 
       const cookieMap = new Map(cookies.map((c) => [c.name, c]));
@@ -53,21 +53,15 @@ describe('CookieStoreCache', () => {
     });
   });
 
-  describe('isReady', () => {
-    it('should return true after initialization', async () => {
-      expect(cookieCache.isReady()).toBe(true);
-    });
-  });
-
   describe('singleton cookieCache', () => {
     it('should export a singleton instance', () => {
-      expect(cookieCache).toBeInstanceOf(CookieStoreCache);
+      expect(cookieStoreCache).toBeInstanceOf(CookieStoreCache);
     });
 
     it('should work with the singleton', async () => {
       await window.cookieStore.set('singleton-test', 'singleton-value');
 
-      const cookie = cookieCache.get('singleton-test');
+      const cookie = cookieStoreCache.get('singleton-test');
       expect(cookie?.value).toBe('singleton-value');
     });
   });
