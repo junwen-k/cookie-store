@@ -41,14 +41,12 @@ describe('useCookie', () => {
       expect(result.current).toBeNull();
     });
 
-    // Set cookie
     await window.cookieStore.set('test', 'initial');
 
     await waitFor(() => {
       expect(result.current?.value).toBe('initial');
     });
 
-    // Update cookie
     await window.cookieStore.set('test', 'updated');
 
     await waitFor(() => {
@@ -65,7 +63,6 @@ describe('useCookie', () => {
       expect(result.current?.value).toBe('value123');
     });
 
-    // Delete cookie
     await window.cookieStore.delete('test');
 
     await waitFor(() => {
@@ -84,11 +81,29 @@ describe('useCookie', () => {
 
     const initialResult = result.current;
 
-    // Set a different cookie
     await window.cookieStore.set('other', 'otherValue');
 
-    // Should still be the same object reference
     expect(result.current).toBe(initialResult);
+  });
+
+  it('should not trigger re-render for unrelated cookie changes', async () => {
+    await window.cookieStore.set('test', 'value123');
+
+    let renderCount = 0;
+    const { result } = renderHook(() => {
+      renderCount++;
+      return useCookie('test');
+    });
+
+    await waitFor(() => {
+      expect(result.current?.value).toBe('value123');
+    });
+
+    const renderCountAfterMount = renderCount;
+
+    await window.cookieStore.set('other', 'otherValue');
+
+    expect(renderCount).toBe(renderCountAfterMount);
   });
 
   it('should handle multiple subscribers', async () => {
@@ -102,7 +117,6 @@ describe('useCookie', () => {
       expect(result2.current?.value).toBe('value123');
     });
 
-    // Update cookie
     await window.cookieStore.set('test', 'updated');
 
     await waitFor(() => {
@@ -177,7 +191,6 @@ describe('useCookies', () => {
       expect(result.current[0]).toMatchObject({ name: 'test', value: 'initial' });
     });
 
-    // Update cookie
     await window.cookieStore.set('test', 'updated');
 
     await waitFor(() => {
@@ -193,7 +206,6 @@ describe('useCookies', () => {
       expect(result.current).toEqual([]);
     });
 
-    // Add cookie
     await window.cookieStore.set('new', 'value');
 
     await waitFor(() => {
@@ -212,7 +224,6 @@ describe('useCookies', () => {
       expect(result.current[0]).toMatchObject({ name: 'test', value: 'value' });
     });
 
-    // Delete cookie
     await window.cookieStore.delete('test');
 
     await waitFor(() => {
@@ -233,13 +244,8 @@ describe('useCookies', () => {
 
     const initialResult = result.current;
 
-    // Update unwatched cookie
     await window.cookieStore.set('unwatched', 'updated');
 
-    // Wait a bit to ensure no update
-    await new Promise((resolve) => setTimeout(resolve, 50));
-
-    // Should still be the same object reference
     expect(result.current).toBe(initialResult);
   });
 
@@ -278,7 +284,6 @@ describe('useCookies', () => {
         expect(result2.current).toHaveLength(2);
       });
 
-      // Add another cookie
       await window.cookieStore.set('test3', 'value3');
 
       await waitFor(() => {

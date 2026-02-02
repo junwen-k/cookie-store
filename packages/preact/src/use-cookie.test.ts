@@ -1,5 +1,5 @@
-import { act, renderHook } from '@testing-library/preact';
 import { cookieStoreCache } from '@cookie-store/core';
+import { act, renderHook } from '@testing-library/preact';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useCookie, useCookies } from './use-cookie';
@@ -36,14 +36,12 @@ describe('useCookie', () => {
 
       await act(async () => {
         await window.cookieStore.set('test', 'initial');
-        await new Promise((resolve) => setTimeout(resolve, 50));
       });
 
       expect(result.current).toMatchObject({ name: 'test', value: 'initial' });
 
       await act(async () => {
         await window.cookieStore.set('test', 'updated');
-        await new Promise((resolve) => setTimeout(resolve, 50));
       });
 
       expect(result.current).toMatchObject({ name: 'test', value: 'updated' });
@@ -73,6 +71,26 @@ describe('useCookie', () => {
       });
 
       expect(result.current).toBeNull();
+    });
+
+    it('should not trigger re-render for unrelated cookie changes', async () => {
+      await window.cookieStore.set('test', 'value123');
+
+      let renderCount = 0;
+      const { result } = renderHook(() => {
+        renderCount++;
+        return useCookie('test');
+      });
+
+      expect(result.current?.value).toBe('value123');
+
+      const renderCountAfterMount = renderCount;
+
+      await act(async () => {
+        await window.cookieStore.set('other', 'otherValue');
+      });
+
+      expect(renderCount).toBe(renderCountAfterMount);
     });
   });
 
@@ -136,7 +154,6 @@ describe('useCookies', () => {
 
       await act(async () => {
         await window.cookieStore.set('test', 'initial');
-        await new Promise((resolve) => setTimeout(resolve, 50));
       });
 
       expect(result.current).toHaveLength(1);
@@ -144,7 +161,6 @@ describe('useCookies', () => {
 
       await act(async () => {
         await window.cookieStore.set('test', 'updated');
-        await new Promise((resolve) => setTimeout(resolve, 50));
       });
 
       expect(result.current).toHaveLength(1);

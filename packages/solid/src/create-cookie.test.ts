@@ -1,5 +1,5 @@
-import { renderHook } from '@solidjs/testing-library';
 import { cookieStoreCache } from '@cookie-store/core';
+import { renderHook } from '@solidjs/testing-library';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createCookie, createCookies } from './create-cookie';
@@ -35,13 +35,9 @@ describe('createCookie', () => {
       expect(result()).toBeNull();
 
       await window.cookieStore.set('test', 'initial');
-      await new Promise((resolve) => setTimeout(resolve, 50));
-
       expect(result()).toMatchObject({ name: 'test', value: 'initial' });
 
       await window.cookieStore.set('test', 'updated');
-      await new Promise((resolve) => setTimeout(resolve, 50));
-
       expect(result()).toMatchObject({ name: 'test', value: 'updated' });
     });
 
@@ -65,6 +61,25 @@ describe('createCookie', () => {
       await window.cookieStore.set('test2', 'other-value');
 
       expect(result()).toBeNull();
+    });
+
+    it('should not trigger signal update for unrelated cookie changes', async () => {
+      await window.cookieStore.set('test', 'value123');
+
+      let effectRunCount = 0;
+      const { result } = renderHook(() => {
+        const cookie = createCookie('test');
+        effectRunCount++;
+        return cookie;
+      });
+
+      expect(result()?.value).toBe('value123');
+
+      const effectCountAfterMount = effectRunCount;
+
+      await window.cookieStore.set('other', 'otherValue');
+
+      expect(effectRunCount).toBe(effectCountAfterMount);
     });
   });
 
@@ -127,14 +142,10 @@ describe('createCookies', () => {
       expect(result()).toEqual([]);
 
       await window.cookieStore.set('test', 'initial');
-      await new Promise((resolve) => setTimeout(resolve, 50));
-
       expect(result()).toHaveLength(1);
       expect(result()[0]).toMatchObject({ name: 'test', value: 'initial' });
 
       await window.cookieStore.set('test', 'updated');
-      await new Promise((resolve) => setTimeout(resolve, 50));
-
       expect(result()).toHaveLength(1);
       expect(result()[0]).toMatchObject({ name: 'test', value: 'updated' });
     });

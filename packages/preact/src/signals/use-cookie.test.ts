@@ -1,5 +1,5 @@
-import { act, renderHook } from '@testing-library/preact';
 import { cookieStoreCache } from '@cookie-store/core';
+import { act, renderHook, waitFor } from '@testing-library/preact';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useCookie, useCookies } from './use-cookie';
@@ -38,13 +38,17 @@ describe('useCookie (signals)', () => {
         await window.cookieStore.set('test', 'initial');
       });
 
-      expect(result.current.value).toMatchObject({ name: 'test', value: 'initial' });
+      await waitFor(() => {
+        expect(result.current.value).toMatchObject({ name: 'test', value: 'initial' });
+      });
 
       await act(async () => {
         await window.cookieStore.set('test', 'updated');
       });
 
-      expect(result.current.value).toMatchObject({ name: 'test', value: 'updated' });
+      await waitFor(() => {
+        expect(result.current.value).toMatchObject({ name: 'test', value: 'updated' });
+      });
     });
 
     it('should update when cookie is deleted', async () => {
@@ -71,6 +75,26 @@ describe('useCookie (signals)', () => {
       });
 
       expect(result.current.value).toBeNull();
+    });
+
+    it('should not trigger re-render for unrelated cookie changes', async () => {
+      await window.cookieStore.set('test', 'value123');
+
+      let renderCount = 0;
+      const { result } = renderHook(() => {
+        renderCount++;
+        return useCookie('test');
+      });
+
+      expect(result.current.value?.value).toBe('value123');
+
+      const renderCountAfterMount = renderCount;
+
+      await act(async () => {
+        await window.cookieStore.set('other', 'otherValue');
+      });
+
+      expect(renderCount).toBe(renderCountAfterMount);
     });
   });
 
@@ -134,19 +158,21 @@ describe('useCookies (signals)', () => {
 
       await act(async () => {
         await window.cookieStore.set('test', 'initial');
-        await new Promise((resolve) => setTimeout(resolve, 50));
       });
 
-      expect(result.current.value).toHaveLength(1);
-      expect(result.current.value[0]).toMatchObject({ name: 'test', value: 'initial' });
+      await waitFor(() => {
+        expect(result.current.value).toHaveLength(1);
+        expect(result.current.value[0]).toMatchObject({ name: 'test', value: 'initial' });
+      });
 
       await act(async () => {
         await window.cookieStore.set('test', 'updated');
-        await new Promise((resolve) => setTimeout(resolve, 50));
       });
 
-      expect(result.current.value).toHaveLength(1);
-      expect(result.current.value[0]).toMatchObject({ name: 'test', value: 'updated' });
+      await waitFor(() => {
+        expect(result.current.value).toHaveLength(1);
+        expect(result.current.value[0]).toMatchObject({ name: 'test', value: 'updated' });
+      });
     });
 
     it('should update when cookie is added', async () => {
@@ -158,8 +184,10 @@ describe('useCookies (signals)', () => {
         await window.cookieStore.set('new', 'value');
       });
 
-      expect(result.current.value).toHaveLength(1);
-      expect(result.current.value[0]).toMatchObject({ name: 'new', value: 'value' });
+      await waitFor(() => {
+        expect(result.current.value).toHaveLength(1);
+        expect(result.current.value[0]).toMatchObject({ name: 'new', value: 'value' });
+      });
     });
 
     it('should update when cookie is deleted', async () => {

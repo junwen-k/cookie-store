@@ -59,14 +59,17 @@ describe('useCookie', () => {
     });
 
     it('should not update for different cookie changes', async () => {
+      await window.cookieStore.set('test', 'value123');
+
       const screen = render(TestUseCookieComponent, {
-        props: { name: 'test1' },
+        props: { name: 'test' },
       });
 
-      await expect.element(screen.getByTestId('cookie-value')).toHaveTextContent('null');
+      await expect.element(screen.getByTestId('cookie-value')).toHaveTextContent('value123');
 
-      await window.cookieStore.set('test2', 'other-value');
-      await expect.element(screen.getByTestId('cookie-value')).toHaveTextContent('null');
+      await window.cookieStore.set('other', 'otherValue');
+
+      await expect.element(screen.getByTestId('cookie-value')).toHaveTextContent('value123');
     });
   });
 
