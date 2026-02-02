@@ -38,7 +38,6 @@
     "@cookie-store/typescript-config": "workspace:*",
     "@sveltejs/vite-plugin-svelte": "^6.1.0",
     "@types/node": "catalog:",
-    "@ungap/with-resolvers": "catalog:",
     "@vitest/browser": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "playwright": "catalog:",

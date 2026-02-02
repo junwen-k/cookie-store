@@ -4,8 +4,6 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: 'happy-dom',
-    setupFiles: ['../core/vitest-setup.ts'], // Use core's mock setup
     coverage: {
       enabled: true,
       provider: 'v8',
@@ -13,6 +11,16 @@ export default defineConfig({
     typecheck: {
       enabled: true,
       tsconfig: './tsconfig.test.json',
+    },
+    browser: {
+      enabled: true,
+      headless: true,
+      provider: 'playwright',
+      instances: [
+        {
+          browser: 'chromium',
+        },
+      ],
     },
   },
 });

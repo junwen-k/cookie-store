@@ -34,7 +34,6 @@
     "@cookie-store/typescript-config": "workspace:*",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "happy-dom": "^18.0.1",
     "tsup": "catalog:",
     "vitest": "catalog:"
   }

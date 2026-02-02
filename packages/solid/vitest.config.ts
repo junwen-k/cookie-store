@@ -4,18 +4,23 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   plugins: [solidPlugin()],
   test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: ['./vitest-setup.ts'],
+    coverage: {
+      enabled: true,
+      provider: 'v8',
+    },
     typecheck: {
+      enabled: true,
       tsconfig: './tsconfig.test.json',
     },
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+    browser: {
+      enabled: true,
+      headless: true,
+      provider: 'playwright',
+      instances: [
+        {
+          browser: 'chromium',
+        },
+      ],
     },
-  },
-  resolve: {
-    conditions: ['development', 'browser'],
   },
 });
