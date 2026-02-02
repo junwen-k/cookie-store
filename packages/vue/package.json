@@ -35,11 +35,11 @@
     "@cookie-store/core": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "catalog:",
     "@cookie-store/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
+    "@vitejs/plugin-vue": "6.0.0",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "@vitejs/plugin-vue": "6.0.0",
     "tsup": "catalog:",
     "vitest": "catalog:",
     "vitest-browser-vue": "^1.0.0"

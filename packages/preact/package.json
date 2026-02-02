@@ -41,10 +41,10 @@
     "@cookie-store/core": "workspace:*"
   },
   "devDependencies": {
+    "@cookie-store/typescript-config": "workspace:*",
     "@preact/preset-vite": "^2.10.2",
     "@testing-library/preact": "^3.2.4",
     "@types/node": "catalog:",
-    "@cookie-store/typescript-config": "workspace:*",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "tsup": "catalog:",
