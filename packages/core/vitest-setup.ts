@@ -21,11 +21,6 @@ class MockCookieStore extends EventTarget {
     const cookie: CookieListItem = {
       name,
       value: val,
-      domain: null,
-      path: '/',
-      expires: null,
-      secure: false,
-      sameSite: 'lax',
     };
 
     this.cookies.set(name, cookie);

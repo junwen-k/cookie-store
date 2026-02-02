@@ -2,12 +2,12 @@
 import { useCookies } from '../use-cookie';
 
 const props = defineProps<{
-  names?: string[];
+  name?: string;
 }>();
 
-const cookies = useCookies(props.names);
+const cookies = useCookies(props.name);
 </script>
 
 <template>
-  <div data-testid="cookies-size">{{ cookies.size }}</div>
+  <div data-testid="cookies-length">{{ cookies.length }}</div>
 </template>

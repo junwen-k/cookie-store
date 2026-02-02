@@ -127,7 +127,7 @@ describe('useCookies', () => {
     const { result } = renderHook(() => useCookies());
 
     await waitFor(() => {
-      expect(result.current.length).toBe(0);
+      expect(result.current).toEqual([]);
     });
   });
 
@@ -138,26 +138,27 @@ describe('useCookies', () => {
     const { result } = renderHook(() => useCookies());
 
     await waitFor(() => {
-      expect(result.current.length).toBe(2);
-      expect(result.current[0]?.value).toBe('value1');
-      expect(result.current[1]?.value).toBe('value2');
+      expect(result.current).toEqual([
+        { name: 'cookie1', value: 'value1' },
+        { name: 'cookie2', value: 'value2' },
+      ]);
     });
   });
 
   it('should update when cookies change', async () => {
     await window.cookieStore.set('test', 'initial');
 
-    const { result } = renderHook(() => useCookies(['test']));
+    const { result } = renderHook(() => useCookies('test'));
 
     await waitFor(() => {
-      expect(result.current.get('test')?.value).toBe('initial');
+      expect(result.current).toEqual([{ name: 'test', value: 'initial' }]);
     });
 
     // Update cookie
     await window.cookieStore.set('test', 'updated');
 
     await waitFor(() => {
-      expect(result.current.get('test')?.value).toBe('updated');
+      expect(result.current).toEqual([{ name: 'test', value: 'updated' }]);
     });
   });
 
@@ -165,32 +166,31 @@ describe('useCookies', () => {
     const { result } = renderHook(() => useCookies());
 
     await waitFor(() => {
-      expect(result.current.size).toBe(0);
+      expect(result.current).toEqual([]);
     });
 
     // Add cookie
     await window.cookieStore.set('new', 'value');
 
     await waitFor(() => {
-      expect(result.current.size).toBe(1);
-      expect(result.current.get('new')?.value).toBe('value');
+      expect(result.current).toEqual([{ name: 'new', value: 'value' }]);
     });
   });
 
   it('should update when cookie is deleted', async () => {
     await window.cookieStore.set('test', 'value');
 
-    const { result } = renderHook(() => useCookies(['test']));
+    const { result } = renderHook(() => useCookies('test'));
 
     await waitFor(() => {
-      expect(result.current.size).toBe(1);
+      expect(result.current).toEqual([{ name: 'test', value: 'value' }]);
     });
 
     // Delete cookie
     await window.cookieStore.delete('test');
 
     await waitFor(() => {
-      expect(result.current.size).toBe(0);
+      expect(result.current).toEqual([]);
     });
   });
 
@@ -198,10 +198,10 @@ describe('useCookies', () => {
     await window.cookieStore.set('watched', 'value1');
     await window.cookieStore.set('unwatched', 'value2');
 
-    const { result } = renderHook(() => useCookies(['watched']));
+    const { result } = renderHook(() => useCookies('watched'));
 
     await waitFor(() => {
-      expect(result.current.size).toBe(1);
+      expect(result.current).toEqual([{ name: 'watched', value: 'value1' }]);
     });
 
     const initialResult = result.current;

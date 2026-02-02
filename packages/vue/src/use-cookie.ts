@@ -47,50 +47,37 @@ export function useCookie(name: string): Readonly<Ref<CookieListItem | null>> {
 
 /**
  * Reactive composable for reading multiple cookies.
- * Returns a readonly ref to a Map of cookie names to cookie objects.
+ * Returns a readonly ref to an array of cookie objects.
  *
- * @param names - Optional array of cookie names to watch. If not provided, watches all cookies.
- * @returns Readonly ref to Map of cookie names to cookie objects
+ * @param name - Optional cookie name to filter by. If not provided, returns all cookies.
+ * @returns Readonly ref to array of cookie objects
  *
  * @example
  * ```vue
  * <script setup>
  * import { useCookies } from '@cookie-store/vue';
  *
- * const cookies = useCookies(['session', 'theme']);
- * const session = computed(() => cookies.value.get('session'));
- * const theme = computed(() => cookies.value.get('theme'));
+ * const cookies = useCookies(); // All cookies
+ * const sessionCookies = useCookies('session'); // Only 'session' cookies
  * </script>
  *
  * <template>
  *   <div>
- *     <p>Session: {{ session?.value }}</p>
- *     <p>Theme: {{ theme?.value }}</p>
+ *     <p v-for="cookie in cookies" :key="cookie.name">
+ *       {{ cookie.name }}: {{ cookie.value }}
+ *     </p>
  *   </div>
  * </template>
  * ```
  */
-export function useCookies(
-  names?: Array<string>
-): Readonly<Ref<ReadonlyMap<string, CookieListItem>>> {
-  // Helper to create filtered map
-  const createFilteredMap = (): ReadonlyMap<string, CookieListItem> => {
-    const allCookies = cookieCache.getAll();
-    const filtered = new Map<string, CookieListItem>();
-
-    allCookies.forEach((cookie) => {
-      if (cookie.name && (!names || names.includes(cookie.name))) {
-        filtered.set(cookie.name, cookie);
-      }
-    });
-
-    return filtered;
-  };
-
-  const cookies = shallowRef<ReadonlyMap<string, CookieListItem>>(createFilteredMap());
+export function useCookies(name?: string): Readonly<Ref<readonly CookieListItem[]>> {
+  // getAll() returns stable reference, but Vue's shallowRef needs new reference to trigger
+  // Always create a copy to ensure Vue reactivity detects changes
+  const cookies = shallowRef<CookieList>([...cookieCache.getAll(name)]);
 
   const listener = () => {
-    cookies.value = createFilteredMap();
+    // Create new array reference for Vue reactivity
+    cookies.value = [...cookieCache.getAll(name)];
   };
 
   cookieCache.addEventListener('change', listener);

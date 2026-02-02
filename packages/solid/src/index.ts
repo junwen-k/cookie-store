@@ -1,4 +1,4 @@
 /* v8 ignore start */
-export { useCookie, useCookies } from './use-cookie';
+export * from './create-cookie';
 export { cookieStore } from '@cookie-store/core';
 /* v8 ignore stop */

@@ -46,24 +46,24 @@ export function useCookie(name: string): CookieListItem | null {
 
 /**
  * Reactive hook for reading multiple cookies.
- * Returns a Map of cookie names to cookie objects.
+ * Returns an array of cookie objects.
  *
  * Uses useSyncExternalStore for optimal React 18+ concurrent rendering support.
  *
- * @param names - Optional array of cookie names to watch. If not provided, watches all cookies.
- * @returns Map of cookie names to cookie objects
+ * @param name - Optional cookie name to filter by. If not provided, returns all cookies.
+ * @returns Array of cookie objects
  *
  * @example
  * ```tsx
  * function Component() {
- *   const cookies = useCookies(['session', 'theme']);
- *   const session = cookies.get('session');
- *   const theme = cookies.get('theme');
+ *   const cookies = useCookies(); // All cookies
+ *   const sessionCookies = useCookies('session'); // Only 'session' cookies
  *
  *   return (
  *     <div>
- *       Session: {session?.value}
- *       Theme: {theme?.value}
+ *       {cookies.map(cookie => (
+ *         <div key={cookie.name}>{cookie.name}: {cookie.value}</div>
+ *       ))}
  *     </div>
  *   );
  * }
@@ -77,9 +77,39 @@ export function useCookies(name?: string): CookieList {
     };
   }, []);
 
-  const getSnapshot = useCallback(() => cookieCache.getAll(name), [name]);
+  // When name is undefined, getAll() returns stable #cookies reference - perfect!
+  // When name is provided, getAll(name) filters which creates new array - need caching
+  const cacheRef = useRef<CookieList>([]);
+
+  const getSnapshot = useCallback(() => {
+    const result = cookieCache.getAll(name);
+
+    // If no name filter, return stable reference directly
+    if (!name) {
+      return result;
+    }
+
+    // For filtered results, cache to maintain reference stability
+    if (arraysEqual(cacheRef.current, result)) {
+      return cacheRef.current;
+    }
+
+    cacheRef.current = result;
+    return result;
+  }, [name]);
 
   const getServerSnapshot = useCallback(() => [], []);
 
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+}
+
+// Helper to compare arrays by value
+function arraysEqual(arr1: CookieList, arr2: CookieList): boolean {
+  if (arr1.length !== arr2.length) return false;
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i]?.name !== arr2[i]?.name || arr1[i]?.value !== arr2[i]?.value) {
+      return false;
+    }
+  }
+  return true;
 }
