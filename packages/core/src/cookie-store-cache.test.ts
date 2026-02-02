@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { CookieStoreCache, cookieStoreCache } from './cookie-store-cache';
 
@@ -16,20 +16,26 @@ describe('CookieStoreCache', () => {
     it('should return cookie after it is set', async () => {
       await window.cookieStore.set('test', 'value123');
 
-      const cookie = cookieStoreCache.get('test');
-      expect(cookie).not.toBeNull();
-      expect(cookie?.name).toBe('test');
-      expect(cookie?.value).toBe('value123');
+      await vi.waitFor(() => {
+        const cookie = cookieStoreCache.get('test');
+        expect(cookie).not.toBeNull();
+        expect(cookie?.name).toBe('test');
+        expect(cookie?.value).toBe('value123');
+      });
     });
 
     it('should return null after cookie is deleted', async () => {
       await window.cookieStore.set('test', 'value123');
 
-      expect(cookieStoreCache.get('test')).not.toBeNull();
+      await vi.waitFor(() => {
+        expect(cookieStoreCache.get('test')).not.toBeNull();
+      });
 
       await window.cookieStore.delete('test');
 
-      expect(cookieStoreCache.get('test')).toBeNull();
+      await vi.waitFor(() => {
+        expect(cookieStoreCache.get('test')).toBeNull();
+      });
     });
   });
 
@@ -43,13 +49,15 @@ describe('CookieStoreCache', () => {
       await window.cookieStore.set('cookie2', 'value2');
       await window.cookieStore.set('cookie3', 'value3');
 
-      const cookies = cookieStoreCache.getAll();
-      expect(cookies.length).toBe(3);
+      await vi.waitFor(() => {
+        const cookies = cookieStoreCache.getAll();
+        expect(cookies.length).toBe(3);
 
-      const cookieMap = new Map(cookies.map((c) => [c.name, c]));
-      expect(cookieMap.get('cookie1')?.value).toBe('value1');
-      expect(cookieMap.get('cookie2')?.value).toBe('value2');
-      expect(cookieMap.get('cookie3')?.value).toBe('value3');
+        const cookieMap = new Map(cookies.map((c) => [c.name, c]));
+        expect(cookieMap.get('cookie1')?.value).toBe('value1');
+        expect(cookieMap.get('cookie2')?.value).toBe('value2');
+        expect(cookieMap.get('cookie3')?.value).toBe('value3');
+      });
     });
   });
 
@@ -61,8 +69,10 @@ describe('CookieStoreCache', () => {
     it('should work with the singleton', async () => {
       await window.cookieStore.set('singleton-test', 'singleton-value');
 
-      const cookie = cookieStoreCache.get('singleton-test');
-      expect(cookie?.value).toBe('singleton-value');
+      await vi.waitFor(() => {
+        const cookie = cookieStoreCache.get('singleton-test');
+        expect(cookie?.value).toBe('singleton-value');
+      });
     });
   });
 });
