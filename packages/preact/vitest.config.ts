@@ -1,4 +1,4 @@
-import preact from '@preact/preset-vite';
+import { preact } from '@preact/preset-vite';
 import { playwright } from '@vitest/browser-playwright';
 import { defineConfig } from 'vitest/config';
 
