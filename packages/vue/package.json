@@ -1,7 +1,7 @@
 {
   "name": "@cookie-store/vue",
   "description": "Reactive Cookie Store API binding for Vue.",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "keywords": [
     "cookie",
