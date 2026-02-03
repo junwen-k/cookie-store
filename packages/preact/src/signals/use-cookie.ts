@@ -24,8 +24,7 @@ export function useCookies(name?: string) {
 
   useSignalEffect(() => {
     const listener = () => {
-      // Create new array copy for reactivity
-      cookies.value = [...cookieStoreCache.getAll(name)];
+      cookies.value = cookieStoreCache.getAll(name);
     };
 
     cookieStoreCache.addEventListener('change', listener);

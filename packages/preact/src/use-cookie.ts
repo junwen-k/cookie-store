@@ -24,8 +24,7 @@ export function useCookies(name?: string): CookieList {
 
   useEffect(() => {
     const listener = () => {
-      // Create new array copy for reactivity
-      setCookies([...cookieStoreCache.getAll(name)]);
+      setCookies(cookieStoreCache.getAll(name));
     };
 
     cookieStoreCache.addEventListener('change', listener);

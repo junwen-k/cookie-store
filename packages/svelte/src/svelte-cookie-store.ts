@@ -25,8 +25,7 @@ export class SvelteCookieStore extends CookieStoreCache {
 
   override getAll(name?: string): CookieList {
     this.#subscribe();
-    // Return new array copy for Svelte reactivity
-    return [...cookieStoreCache.getAll(name)];
+    return cookieStoreCache.getAll(name);
   }
 }
 

@@ -18,8 +18,7 @@ export function createCookie(name: string) {
 export function createCookies(name?: string) {
   return from<CookieList>((set) => {
     const listener = () => {
-      // Create new array copy for reactivity
-      set([...cookieStoreCache.getAll(name)]);
+      set(cookieStoreCache.getAll(name));
     };
 
     cookieStoreCache.addEventListener('change', listener);
