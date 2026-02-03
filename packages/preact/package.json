@@ -1,7 +1,7 @@
 {
   "name": "@cookie-store/preact",
   "description": "Reactive Cookie Store API binding for Preact.",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "type": "module",
   "keywords": [
     "cookie",
