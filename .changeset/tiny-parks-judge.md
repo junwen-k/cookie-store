@@ -1,4 +1,5 @@
 ---
+'@cookie-store/core': minor
 '@cookie-store/preact': minor
 '@cookie-store/react': minor
 '@cookie-store/solid': minor
