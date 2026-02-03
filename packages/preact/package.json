@@ -1,0 +1,63 @@
+{
+  "name": "@cookie-store/preact",
+  "description": "Reactive Cookie Store API binding for Preact.",
+  "version": "0.1.0",
+  "type": "module",
+  "keywords": [
+    "cookie",
+    "cookie-store",
+    "preact",
+    "hooks",
+    "signals",
+    "reactive",
+    "typescript"
+  ],
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./signals": {
+      "types": "./dist/signals/index.d.ts",
+      "import": "./dist/signals/index.js",
+      "require": "./dist/signals/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "turbo watch build",
+    "build": "tsup",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@preact/signals": "^2.2.1",
+    "@cookie-store/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@cookie-store/typescript-config": "workspace:*",
+    "@preact/preset-vite": "^2.10.2",
+    "@testing-library/preact": "^3.2.4",
+    "@types/node": "catalog:",
+    "@vitest/browser-playwright": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "tsup": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "@preact/signals": "^2.2.1",
+    "preact": "^10.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@preact/signals": {
+      "optional": true
+    }
+  }
+}

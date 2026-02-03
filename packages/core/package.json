@@ -1,0 +1,33 @@
+{
+  "name": "@cookie-store/core",
+  "description": "Simple in-memory mirror of the Cookie Store API for synchronous reads.",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "turbo watch build",
+    "build": "tsup",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@cookie-store/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
+    "@vitest/browser-playwright": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "tsup": "catalog:",
+    "vitest": "catalog:"
+  }
+}

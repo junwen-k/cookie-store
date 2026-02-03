@@ -1,0 +1,10 @@
+{
+  "extends": "@cookie-store/typescript-config/browser.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*"]
+}

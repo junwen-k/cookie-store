@@ -1,0 +1,4 @@
+{
+  "extends": "@cookie-store/typescript-config/test.json",
+  "include": ["src"]
+}

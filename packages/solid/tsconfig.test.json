@@ -1,0 +1,9 @@
+{
+  "extends": "@cookie-store/typescript-config/test.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js"
+  },
+  "include": ["src"],
+  "exclude": ["dist", "node_modules"]
+}
