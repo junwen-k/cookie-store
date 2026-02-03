@@ -1,7 +1,7 @@
 {
   "name": "@cookie-store/core",
   "description": "Simple in-memory mirror of the Cookie Store API for synchronous reads.",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "license": "MIT",

@@ -1,7 +1,7 @@
 {
   "name": "@cookie-store/solid",
   "description": "Reactive Cookie Store API binding for Solid.",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "keywords": [
     "cookie",
