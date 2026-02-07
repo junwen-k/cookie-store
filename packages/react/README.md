@@ -21,12 +21,13 @@ function App() {
       <p>{session?.value ?? 'Not logged in'}</p>
       <button
         onClick={() =>
-          window.cookieStore.set('session', 'token', { expires: Date.now() + 86400000 })
+          window.cookieStore.set('session', 'token', {
+            expires: Date.now() + 86400000,
+          })
         }
       >
         Login
       </button>
-      <button onClick={() => window.cookieStore.delete('session')}>Logout</button>
     </div>
   );
 }

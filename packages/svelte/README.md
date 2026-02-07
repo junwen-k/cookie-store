@@ -17,7 +17,9 @@ pnpm add @cookie-store/svelte
   const session = svelteCookieStore.get('session');
 
   async function login() {
-    await window.cookieStore.set('session', 'token', { expires: Date.now() + 86400000 });
+    await window.cookieStore.set('session', 'token', {
+      expires: Date.now() + 86400000,
+    });
   }
 </script>
 

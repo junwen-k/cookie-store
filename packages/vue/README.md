@@ -17,7 +17,9 @@ import { useCookie } from '@cookie-store/vue';
 const session = useCookie('session');
 
 async function login() {
-  await window.cookieStore?.set('session', 'token', { expires: Date.now() + 86400000 });
+  await window.cookieStore?.set('session', 'token', {
+    expires: Date.now() + 86400000,
+  });
 }
 </script>
 
