@@ -1,16 +1,10 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { page } from 'vitest/browser';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { page } from 'vitest/browser';
 
-import {
-  COOKIE_NAME,
-  TestInjectCookieComponent,
-} from './fixtures/test-inject-cookie.component';
-import {
-  COOKIES_NAME,
-  TestInjectCookiesComponent,
-} from './fixtures/test-inject-cookies.component';
+import { COOKIE_NAME, TestInjectCookieComponent } from './fixtures/test-inject-cookie.component';
+import { COOKIES_NAME, TestInjectCookiesComponent } from './fixtures/test-inject-cookies.component';
 
 describe('injectCookie', () => {
   beforeEach(async () => {
@@ -19,10 +13,7 @@ describe('injectCookie', () => {
 
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
-      providers: [
-        provideZonelessChangeDetection(),
-        { provide: COOKIE_NAME, useValue: 'test' },
-      ],
+      providers: [provideZonelessChangeDetection(), { provide: COOKIE_NAME, useValue: 'test' }],
     });
   });
 
@@ -133,10 +124,7 @@ describe('injectCookies', () => {
       await window.cookieStore.set('test2', 'value2');
 
       TestBed.configureTestingModule({
-        providers: [
-          provideZonelessChangeDetection(),
-          { provide: COOKIES_NAME, useValue: 'test1' },
-        ],
+        providers: [provideZonelessChangeDetection(), { provide: COOKIES_NAME, useValue: 'test1' }],
       });
       const fixture = TestBed.createComponent(TestInjectCookiesComponent);
       document.body.appendChild(fixture.nativeElement);
