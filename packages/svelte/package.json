@@ -41,8 +41,8 @@
     "@types/node": "catalog:",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "svelte": "^5.53.3",
-    "svelte-check": "^4.4.3",
+    "svelte": "^5.53.6",
+    "svelte-check": "^4.4.4",
     "tsup": "catalog:",
     "vitest": "catalog:",
     "vitest-browser-svelte": "^2.0.2"
