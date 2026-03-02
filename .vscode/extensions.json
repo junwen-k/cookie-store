@@ -4,6 +4,7 @@
     "esbenp.prettier-vscode",
     "svelte.svelte-vscode",
     "Vercel.turbo-vsc",
-    "Vue.volar"
+    "Vue.volar",
+    "Angular.ng-template"
   ]
 }
