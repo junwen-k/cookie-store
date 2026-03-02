@@ -1,6 +1,6 @@
 # @cookie-store
 
-Reactive bindings for the [Cookie Store API](https://developer.mozilla.org/en-US/docs/Web/API/Cookie_Store_API). Supported in React, Vue, Svelte, Solid, and Preact.
+Reactive bindings for the [Cookie Store API](https://developer.mozilla.org/en-US/docs/Web/API/Cookie_Store_API). Supported in React, Vue, Svelte, Solid, Preact, and Angular.
 
 ## Features
 
