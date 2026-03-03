@@ -1,7 +1,7 @@
 {
   "name": "@cookie-store/angular",
   "description": "Reactive Cookie Store API binding for Angular.",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "type": "module",
   "keywords": [
     "cookie",
