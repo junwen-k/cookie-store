@@ -37,15 +37,15 @@
   },
   "devDependencies": {
     "@cookie-store/typescript-config": "workspace:*",
-    "@sveltejs/vite-plugin-svelte": "^6.1.0",
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
     "@types/node": "catalog:",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "svelte": "^5.53.6",
-    "svelte-check": "^4.4.4",
+    "svelte": "^5.53.12",
+    "svelte-check": "^4.4.5",
     "tsup": "catalog:",
     "vitest": "catalog:",
-    "vitest-browser-svelte": "^2.0.2"
+    "vitest-browser-svelte": "^2.1.0"
   },
   "peerDependencies": {
     "svelte": "^5.7.0"

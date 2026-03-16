@@ -43,7 +43,7 @@
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "tsup": "catalog:",
-    "vite-plugin-solid": "^2.11.8",
+    "vite-plugin-solid": "^2.11.11",
     "vitest": "catalog:"
   },
   "peerDependencies": {
