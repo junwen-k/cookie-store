@@ -38,12 +38,12 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@preact/signals": "^2.8.1",
+    "@preact/signals": "^2.8.2",
     "@cookie-store/core": "workspace:*"
   },
   "devDependencies": {
     "@cookie-store/typescript-config": "workspace:*",
-    "@preact/preset-vite": "^2.10.2",
+    "@preact/preset-vite": "^2.10.4",
     "@testing-library/preact": "^3.2.4",
     "@types/node": "catalog:",
     "@vitest/browser-playwright": "catalog:",
@@ -52,7 +52,7 @@
     "vitest": "catalog:"
   },
   "peerDependencies": {
-    "@preact/signals": "^2.8.1",
+    "@preact/signals": "^2.8.2",
     "preact": "^10.0.0"
   },
   "peerDependenciesMeta": {
